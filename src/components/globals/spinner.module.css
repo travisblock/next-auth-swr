@@ -1,0 +1,85 @@
+@keyframes LoaderSpinner {
+    0% {
+        transform: rotate(0)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+.LoaderSpinner div {
+    box-sizing: border-box !important
+}
+
+.LoaderSpinner>div {
+    position: absolute;
+    width: 126.62999999999998px;
+    height: 126.62999999999998px;
+    top: 37.184999999999995px;
+    left: 37.184999999999995px;
+    border-radius: 50%;
+    border: 10.049999999999999px solid #000;
+    border-color: #212752 transparent #212752 transparent;
+    animation: LoaderSpinner 0.5246376811594202s linear infinite;
+}
+
+.LoaderSpinner>div:nth-child(2) {
+    border-color: transparent
+}
+
+.LoaderSpinner>div:nth-child(2) div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: rotate(45deg);
+}
+
+.LoaderSpinner>div:nth-child(2) div:before,
+.LoaderSpinner>div:nth-child(2) div:after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 10.049999999999999px;
+    height: 10.049999999999999px;
+    top: -10.049999999999999px;
+    left: 48.239999999999995px;
+    background: #212752;
+    border-radius: 50%;
+    box-shadow: 0 116.57999999999998px 0 0 #212752;
+}
+
+.LoaderSpinner>div:nth-child(2) div:after {
+    left: -10.049999999999999px;
+    top: 48.239999999999995px;
+    box-shadow: 116.57999999999998px 0 0 0 #212752;
+}
+
+.Loader{
+    width: 201px;
+    height: 201px;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.LoaderSpinner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform: translateZ(0) scale(1);
+    backface-visibility: hidden;
+    transform-origin: 0 0;
+}
+
+.LoaderSpinner div {
+    box-sizing: content-box;
+}
+
+.BoxLoader{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position:fixed;
+    align-items: center;
+}
