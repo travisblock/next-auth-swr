@@ -1,0 +1,68 @@
+.login{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+}
+
+.box {
+    border: 1px solid #eee;
+    width: 29rem;
+    padding: 5rem 2rem;
+    border-radius: .5rem;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.group {
+    display: block;
+    margin-bottom: 2rem;
+}
+
+.group label {
+    display: block;
+    width: 100%;
+    padding-bottom: .6rem;
+}
+
+.input {
+    display: block;
+    width: 100%;
+    outline: none;
+    border: 1px solid #dadada;
+    border-radius: .5rem;
+    padding: .9rem;
+}
+
+.submit {
+    text-align: center;
+    display: block;
+    margin: auto;
+    padding: .7rem 2rem;
+    border-radius: .5rem;
+    border: 0;
+    background-color: #00adfe;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.7rem;
+}
+
+.error {
+    background-color: rgb(243, 89, 89);
+    color: #fff;
+    margin-bottom: 2rem;
+    padding: .5rem 1rem;
+    border-radius: .3rem;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+.close{
+    margin-left: .5rem;
+    cursor: pointer;
+}
