@@ -1,0 +1,52 @@
+.form {
+    max-width: 500px;
+}
+
+.center {
+    display: block;
+    margin: 0 auto;
+}
+
+.group label {
+    color: #333;
+    display: block;
+    font-size: 1.7rem;
+    margin-bottom: .5rem;
+}
+
+.control {
+    border: 1px solid #dadada;
+    border-radius: .5rem;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    font-size: 1.5rem;
+    outline: 0;
+    padding: 9px;
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+textarea.control {
+    height: 100px;
+    resize: vertical;
+}
+
+.button {
+    background-color: #2e4ead;
+    border: none;
+    color: white;
+    padding: 1rem 2rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1.5rem;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: .5rem;
+    transition: all .5s ease-in-out;
+}
+
+.button:hover {
+    background-color: #1a3d7c;
+}

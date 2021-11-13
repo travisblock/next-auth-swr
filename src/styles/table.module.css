@@ -18,3 +18,35 @@
   width: 75%;
   margin: auto;
 }
+.tdaction div {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+div.add{
+  display:flex;
+}
+
+a.add {
+  background-color: #4CAF50;
+  color: white;
+  padding: .6rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+}
+
+.edit {
+  background-color: #345aca;
+  color: #fff;
+  padding: .5rem 1.5rem;
+  border-radius: .5rem;
+}
+
+.delete {
+  background-color: #e05b5b;
+  color: #fff;
+  padding: .5rem 1.5rem;
+  border-radius: .5rem;
+}
