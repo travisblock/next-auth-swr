@@ -12,7 +12,8 @@ const ENDPOINT = {
         TASK: {
             INDEX: 'user/task', // GET
             CREATE: 'user/task', // POST
-            EDIT: 'user/task/{id}/edit', // PATCH
+            EDIT: 'user/task/{id}/edit', // GET
+            UPDATE: 'user/task/{id}', // PATCH
             DELETE: 'user/task/{id}', // DELETE
         }
     }

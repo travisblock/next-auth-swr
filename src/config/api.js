@@ -9,7 +9,8 @@ const API = {
             INDEX: 'api/user/task',
             CREATE: 'api/user/task/create',
             EDIT: 'api/user/task/{id}',
-            DELETE: 'api/user/task/{delete}',
+            UPDATE: 'api/user/task/{id}',
+            DELETE: 'api/user/task/{id}',
         }
     }
 }

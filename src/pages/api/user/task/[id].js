@@ -43,7 +43,33 @@ async function TaskGet(req, res) {
     }
 }
 
-function TaskUpdate(req, res) {
+async function TaskUpdate(req, res) {
+    try {
+        const { id } = req.query;
+        const { token } = req.session;
+        const { name, description } = req.body;
+
+        if (!token) {
+            req.session.destroy();
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        const { task : data } = await fetcher(endpoint('user.task.update', { id }), {
+            method: 'PATCH',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, description, '_method': 'PATCH' })
+        })
+
+        res.status(200).send(data);
+
+    }catch(err) {
+        res.status(400).json({ error: err.message })
+    }
 
 }
 
