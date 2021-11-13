@@ -8,7 +8,6 @@ import { useTable } from "react-table"
 import { SingleSkeleton } from "components/globals/skeletons"
 import tableStyle from 'styles/table.module.css'
 import Link from "next/link"
-import fetcher from "lib/fetcher"
 
 function Table ({ columns, data, loading}) {
     const { 
@@ -38,11 +37,13 @@ function Table ({ columns, data, loading}) {
                         {row.cells.map((cell, i) => {
                             if ((cell.column.id === "id") && !loading ) {
                                 return (
-                                    <td key={i} className={tableStyle.td} {...cell.getCellProps()}>
-                                        <Link href={route('user.task.edit', {id: cell.value})}>
-                                            <a href={route('user.task.edit', {id: cell.value})}>EDIT</a>
-                                        </Link>
-                                        <a href={`/delete/${cell.value}`}>HPAUS</a>
+                                    <td key={i} className={`${tableStyle.td} ${tableStyle.tdaction}`} {...cell.getCellProps()}>
+                                        <div>
+                                            <Link href={route('user.task.edit', {id: cell.value})}>
+                                                <a className={tableStyle.edit} href={route('user.task.edit', {id: cell.value})}>EDIT</a>
+                                            </Link>
+                                            <a className={tableStyle.delete} href={`/delete/${cell.value}`}>HAPUS</a>
+                                        </div>
                                     </td>
                                 )
                             }
@@ -72,20 +73,24 @@ export default function Task() {
         {
             Header: 'No',
             id: 'row',
-            Cell: ({ row }) => row.index + 1
+            Cell: ({ row }) => row.index + 1,
+            width: 5
         },
         {
             Header: 'Judul',
             accessor: 'name',
+            width: 35
             
         },
         {
             Header: 'Deskripsi',
             accessor: 'description',
+            width: 50
         },
         {
             Header: 'Aksi',
             accessor: 'id',
+            width: 10
         },
     ]
 
@@ -95,7 +100,7 @@ export default function Task() {
             ...col,
             Cell: () => <SingleSkeleton/>
         }))
-        : rawColumns , [data, loading]
+        : rawColumns , [data, loading, rawColumns]
     )
 
     return (
@@ -104,6 +109,11 @@ export default function Task() {
                 <h1 style={{ textAlign: 'center' }}>Tugas Saya</h1>
             </div>
             <div className="content" style={{ overflowX: 'auto' }}>
+                <div className={tableStyle.add}>
+                    <Link href={route('user.task.create')}>
+                        <a className={tableStyle.add}>+ Tambah Tugas</a>
+                    </Link>
+                </div>
                 <Table columns={columns} data={tasks} loading={loading} />
             </div>
         </>
