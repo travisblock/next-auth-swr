@@ -11,6 +11,7 @@ import style from 'styles/login.module.css'
 export default function Login() {
     const [errors, setErrors] = useState([])
     const router = useRouter()
+    const { next = route('user.index') } = router.query
     const [processing, setProcessing] = useState(false)
 
     const handleSubmit = useCallback(async (e) => {
@@ -18,7 +19,6 @@ export default function Login() {
         const { email, password } = e.currentTarget
         setProcessing(true)
         try {
-            const { next = null } = router.query
             const user = await fetcher(api('login'), {
                 method: 'POST',
                 headers: { 
@@ -28,10 +28,7 @@ export default function Login() {
                 body: JSON.stringify({ email : email.value, password : password.value})
             })
             if (user) {
-                if (next) {
-                    return router.push(next)
-                }
-                router.push(route('user.index'))
+                router.push(next)
             } 
         } catch (error) {
             setErrors(errors => [...errors, 'Gagal login, silahkan coba lagi'])
@@ -43,9 +40,9 @@ export default function Login() {
         setErrors([])
     }
 
-    // useEffect(() => {
-    //     router.prefetch(route('user.index'))
-    // }, [])
+    useEffect(() => {
+        router.prefetch(next)
+    }, [])
 
     return (
         <Main title="Masuk Untuk Melanjutkan">
@@ -80,11 +77,18 @@ export default function Login() {
 export const getServerSideProps = withIronSessionSsr(async function ({ req, res }) {
     const { user } = req.session
 
-    const isFirstServerCall = req?.url?.indexOf('/_next/data/') === -1
-    if (user && isFirstServerCall) {
+    console.log(req.url);
+    const nexturi = req.url 
+    ? (
+        decodeURIComponent(req.url).indexOf('next=') !== -1 
+        ? decodeURIComponent(req.url).split('next=')[1] : route('user.index')
+    )
+    : route('user.index');
+    
+    if (user) {
         return {
             redirect : {
-                destination: route('user.index'),
+                destination: nexturi,
                 permanent: false
             }
         }

@@ -11,8 +11,9 @@ export default function TaskEdit() {
     const loading = (!error && !data) || ( error && !data )
 
     if (error && !data) {
-        router.replace(`${route('login')}/?next=${route('user.task.edit', { id: id })}`)
+        router.push(`${route('login')}/?next=${route('user.task.index')}`)
     }
+    
     return (
         <>
             <div className="content">
