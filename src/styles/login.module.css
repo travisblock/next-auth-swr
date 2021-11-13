@@ -8,10 +8,10 @@
 }
 
 .box {
-    border: 1px solid #eee;
     width: 29rem;
     padding: 5rem 2rem;
     border-radius: .5rem;
+    background-color: #fff;
 }
 
 .title {
