@@ -20,12 +20,14 @@ function MyApp({ Component, pageProps }) {
     }
   }, [router])
 
+  const getLayout = Component.getLayout || ((page) => page)
+
   return (
     <SWRConfig 
       value={{ 
         fetcher: fetch,
         onError: (err) => {
-          console.log(err)
+          console.log('error SWRConfig', err)
         }
       }}
     >
@@ -43,7 +45,7 @@ function MyApp({ Component, pageProps }) {
         #nprogress .spinner { display: none }
       `}
       </style>
-      <Component {...pageProps} />
+      { getLayout(<Component {...pageProps} />) }
     </SWRConfig>
   )
 }
