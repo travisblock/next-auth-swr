@@ -20,7 +20,6 @@ export default function HomeSidebar({ collapsed } = {}) {
             setIslogout(false)
         }
         router.replace(route('login'));
-        setIslogout(false)
     }
 
     return (
