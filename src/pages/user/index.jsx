@@ -14,7 +14,7 @@ export default function User() {
     }
 
     if (error && !user) {
-        Router.push(route('login'));
+        Router.replace(route('login'));
     }
     
     return (
@@ -24,10 +24,8 @@ export default function User() {
     )
 }
 
-User.getLayout = function getLayout(page) {
-    return (
-        <UserLayout title="Welcome To Dashboard">
-            { page }
-        </UserLayout>
-    )
-}
+User.getLayout = (page) => (
+    <UserLayout title="Welcome To Dashboard">
+        { page }
+    </UserLayout>
+)
