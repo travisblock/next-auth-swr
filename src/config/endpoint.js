@@ -8,15 +8,22 @@ const ENDPOINT = {
     LOGIN: 'auth/authenticate',
     LOGOUT: 'auth/logout',
     VERIFY: 'auth/verify',
-    ADMIN: {
-        DASHBOARD: 'admin'
-    },
-    MANAGER: {
-        DASHBOARD: 'manager'
+    USER: {
+        TASK: {
+            INDEX: 'user/task', // GET
+            CREATE: 'user/task', // POST
+            EDIT: 'user/task/{id}/edit', // PATCH
+            DELETE: 'user/task/{id}', // DELETE
+        }
     }
 }
 
-export default function endpoint (name) {
+export default function endpoint (name, param=null) {
     const BASE = ENDPOINT.BASE[process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'LOCAL'];
-    return `${BASE}/${get(ENDPOINT, name.toUpperCase())}`;
+    name = `${BASE}/${get(ENDPOINT, name.toUpperCase())}`;
+    return !param ? name : replacer(name, param);
+}
+
+function replacer (resource, data) {
+    return resource.replace(/\{(.*?)\}/g, ($1, $2) => data[$2]);
 }

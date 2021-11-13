@@ -3,7 +3,7 @@ import { get } from "lodash"
 const ROUTES = {
     LOGIN: 'login',
     USER: {
-        DASHBOARD: 'user/dashboard',
+        INDEX: 'user',
         TASK: {
             INDEX: 'user/task',
             CREATE: 'user/task/create',
