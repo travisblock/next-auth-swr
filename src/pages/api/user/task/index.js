@@ -20,7 +20,7 @@ async function TaskIndex(req, res) {
             res.json(data)
         } else {
             req.session.destroy()
-            res.status(404).json({ user: null })
+            res.status(401).json({ user: null })
         }
     }catch(error) {
         req.session.destroy()
