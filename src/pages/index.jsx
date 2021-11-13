@@ -1,6 +1,8 @@
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
 import Main from 'components/layouts/main'
+import { route } from 'config/routes'
+
 export default function Home() {
   return (
     <Main title="My Next.js Homepage">
@@ -16,13 +18,13 @@ export default function Home() {
           <p className={styles.description}>
             Get started by Login{' '}
             <code className={styles.code}>
-              <Link href="/login">
+              <Link href={route('login')}>
                 <a>pages/login.js</a>
               </Link>
             </code>
             {' Or '}
             <code className={styles.code}>
-              <Link href="/profile">
+              <Link href={route('user.index')}>
                 <a>pages/profile.js</a>
               </Link>
             </code>

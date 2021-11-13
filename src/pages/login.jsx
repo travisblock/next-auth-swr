@@ -1,7 +1,9 @@
 import Main from "components/layouts/main"
 import api from "config/api"
+import { route } from "config/routes"
+import { withIronSessionSsr } from "iron-session/next"
 import fetcher from "lib/fetcher"
-import withSession from "lib/session"
+import { sessionOptions } from "lib/session"
 import { useRouter } from "next/router"
 import { useCallback, useEffect, useState } from "react"
 import style from 'styles/login.module.css'
@@ -9,11 +11,14 @@ import style from 'styles/login.module.css'
 export default function Login() {
     const [errors, setErrors] = useState([])
     const router = useRouter()
+    const [processing, setProcessing] = useState(false)
+
     const handleSubmit = useCallback(async (e) => {
         e.preventDefault()
         const { email, password } = e.currentTarget
-        
+        setProcessing(true)
         try {
+            const { next = null } = router.query
             const user = await fetcher(api('login'), {
                 method: 'POST',
                 headers: { 
@@ -22,19 +27,25 @@ export default function Login() {
                 },
                 body: JSON.stringify({ email : email.value, password : password.value})
             })
-            if (user)  router.push('/profile')
+            if (user) {
+                if (next) {
+                    return router.push(next)
+                }
+                router.push(route('user.index'))
+            } 
         } catch (error) {
             setErrors(errors => [...errors, 'Gagal login, silahkan coba lagi'])
         }
+        setProcessing(false)
     }, [])
 
     const handleClose = () => {
         setErrors([])
     }
 
-    useEffect(() => {
-        router.prefetch('/profile')
-    }, [])
+    // useEffect(() => {
+    //     router.prefetch(route('user.index'))
+    // }, [])
 
     return (
         <Main title="Masuk Untuk Melanjutkan">
@@ -56,7 +67,9 @@ export default function Login() {
                             <label>Password</label>
                             <input type="text" name="password" className={style.input} autoComplete="off" required={true}/>
                         </div>
-                        <button type="submit" className={style.submit}>Login</button>
+                        <button type="submit" className={style.submit}>
+                            { processing ? 'Processing...' : 'Sign In' }
+                        </button>
                     </form>
                 </div>
             </section>
@@ -64,13 +77,14 @@ export default function Login() {
     )
 }
 
-export const getServerSideProps = withSession(async function ({ req, res}) {
-    const user = req.session.get('user')
+export const getServerSideProps = withIronSessionSsr(async function ({ req, res }) {
+    const { user } = req.session
 
-    if (user) {
+    const isFirstServerCall = req?.url?.indexOf('/_next/data/') === -1
+    if (user && isFirstServerCall) {
         return {
             redirect : {
-                destination: '/profile',
+                destination: route('user.index'),
                 permanent: false
             }
         }
@@ -79,4 +93,4 @@ export const getServerSideProps = withSession(async function ({ req, res}) {
     return {
         props : {}
     }
-})
+}, sessionOptions)
