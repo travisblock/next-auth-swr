@@ -21,7 +21,7 @@
     border-radius: 50%;
     border: 10.049999999999999px solid #000;
     border-color: #212752 transparent #212752 transparent;
-    animation: LoaderSpinner 0.5246376811594202s linear infinite;
+    animation: LoaderSpinner 0.5s linear infinite;
 }
 
 .LoaderSpinner>div:nth-child(2) {
@@ -76,10 +76,8 @@
 }
 
 .BoxLoader{
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    justify-content: center;
     position:fixed;
-    align-items: center;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%, 0);
 }
