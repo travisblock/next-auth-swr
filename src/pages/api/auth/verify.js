@@ -1,11 +1,20 @@
-import withSession from "lib/session";
+import { withIronSessionApiRoute } from "iron-session/next";
+import { sessionOptions } from "lib/session";
 
-export default withSession(async (req, res) => {
-    const user = req.session.get('user');
+export default withIronSessionApiRoute(verify, sessionOptions)
 
-    if (user) {
-        res.json({ ...user })
-    }else {
-        res.status(401).json({ user: null })
+async function verify (req, res) {
+    try{
+        const user = req.session.user
+    
+        if (user) {
+            res.json({ ...user })
+        }else {
+            req.session.destroy()
+            res.status(401).json({ user: null })
+        }
+    }catch(error) {
+        req.session.destroy()
+        res.status(500).json({ error: error.message })
     }
-})
+}

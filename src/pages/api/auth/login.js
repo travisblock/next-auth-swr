@@ -1,8 +1,11 @@
+import { withIronSessionApiRoute } from "iron-session/next";
 import endpoint from "config/endpoint";
 import fetcher from "lib/fetcher";
-import withSession from "lib/session";
+import { sessionOptions } from "lib/session";
 
-export default withSession(async (req, res) => {
+export default withIronSessionApiRoute(login, sessionOptions)
+
+async function login (req, res) {
     const { email, password } = req.body
 
     try {
@@ -14,12 +17,12 @@ export default withSession(async (req, res) => {
             },
             body: JSON.stringify({ email, password })
         })
-        req.session.set('user', user)
-        req.session.set('token', token)
+        req.session.user = user
+        req.session.token = token
         await req.session.save()
         res.json(user)
     }catch (error) {
         const { response } = error;
         res.status(response?.status || 500).json(error.data)
     }
-})
+}

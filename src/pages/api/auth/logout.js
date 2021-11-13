@@ -1,9 +1,12 @@
+import { withIronSessionApiRoute } from "iron-session/next";
 import endpoint from "config/endpoint";
 import fetcher from "lib/fetcher";
-import withSession from "lib/session";
+import { sessionOptions } from "lib/session";
 
-export default withSession(async (req, res) => {
-    const { token } = req.session.get();
+export default withIronSessionApiRoute(logout, sessionOptions)
+
+async function logout (req, res) {
+    const token = req.session.token
 
     try {
         await fetcher(endpoint('logout'), {
@@ -14,9 +17,9 @@ export default withSession(async (req, res) => {
             }
         });
     }catch(error) {
-        console.log('ERRRO ', error);
+        console.log('api/logout error ', error);
     }
 
     req.session.destroy()
     res.json({ user: null })
-})
+}
