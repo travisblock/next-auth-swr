@@ -1,13 +1,16 @@
 import api from "config/api";
-import Router from "next/router";
 import { useEffect } from "react";
 import useSWR from "swr";
+import { useRouter } from "next/router";
 
 export default function useUser({ 
     redirectTo = false,
     redirectIfFound = false
 } = {}) {
-    const { data: user, mutate } = useSWR(api('verify'))
+    const { data: user, mutate, error } = useSWR(api('verify'))
+    const router = useRouter()
+    const next = router.asPath ? `/?next=${router.asPath}` : ''
+    const loading = !error && !user;
 
     useEffect(() => {
 
@@ -17,10 +20,10 @@ export default function useUser({
             (redirectTo && !redirectIfFound && !user ) ||
             (redirectIfFound && user)
         ) {
-            Router.replace(redirectTo);
+            router.replace(`${redirectTo}${next}`);
         }
 
     }, [user, redirectTo, redirectIfFound]);
 
-    return { user, mutate };
+    return { user, mutate, loading };
 }
