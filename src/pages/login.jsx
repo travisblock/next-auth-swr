@@ -42,7 +42,7 @@ export default function Login() {
 
     useEffect(() => {
         router.prefetch(next)
-    }, [])
+    }, [next, router])
 
     return (
         <Main title="Masuk Untuk Melanjutkan">
@@ -77,7 +77,6 @@ export default function Login() {
 export const getServerSideProps = withIronSessionSsr(async function ({ req, res }) {
     const { user } = req.session
 
-    console.log(req.url);
     const nexturi = req.url 
     ? (
         decodeURIComponent(req.url).indexOf('next=') !== -1 
