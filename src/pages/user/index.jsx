@@ -8,24 +8,20 @@ import { useEffect, useState } from "react";
 
 export default function User() {
     const { data: user, error } = useSWR(api('verify'));
-
-    if (!user && !error) {
-        return <Spinner/>
-    }
-
+    
     if (error && !user) {
         Router.replace(route('login'));
     }
-    
+
+    if (!user) {
+        return <Spinner/>
+    }
+
     return (
-        <div className="content">
-            <h1>Welcome</h1>
-        </div>
+        <UserLayout title="Welcome To Dashboard">
+            <div className="content">
+                <h1>Welcome</h1>
+            </div>
+        </UserLayout>
     )
 }
-
-User.getLayout = (page) => (
-    <UserLayout title="Welcome To Dashboard">
-        { page }
-    </UserLayout>
-)
