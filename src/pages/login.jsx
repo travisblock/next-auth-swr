@@ -74,7 +74,7 @@ export default function Login() {
     )
 }
 
-export const getServerSideProps = withIronSessionSsr(async function ({ req, res }) {
+export const getServerSideProps = withIronSessionSsr(async function ({ req }) {
     const { user } = req.session
 
     const nexturi = req.url 
