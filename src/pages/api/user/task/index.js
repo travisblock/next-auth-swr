@@ -3,9 +3,9 @@ import { withIronSessionApiRoute } from "iron-session/next"
 import fetcher from "lib/fetcher";
 import { sessionOptions } from "lib/session"
 
-export default withIronSessionApiRoute(TaskIndex, sessionOptions);
+export default withIronSessionApiRoute(taskIndex, sessionOptions);
 
-async function TaskIndex(req, res) {
+async function taskIndex(req, res) {
     try{
         const token = req.session.token
         if (typeof token != 'undefined') {

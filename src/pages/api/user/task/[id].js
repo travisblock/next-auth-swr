@@ -3,22 +3,21 @@ import { sessionOptions } from "lib/session";
 import endpoint from "config/endpoint";
 import fetcher from 'lib/fetcher';
 
-
-export default withIronSessionApiRoute(TaskDetail, sessionOptions);
-function TaskDetail (req, res) {
+export default withIronSessionApiRoute(taskDetail, sessionOptions);
+function taskDetail (req, res) {
     switch (req.method) {
         case 'GET':
-            return TaskGet(req, res);
+            return taskGet(req, res);
         case 'PATCH':
-            return TaskUpdate(req, res);
+            return taskUpdate(req, res);
         case 'DELETE':
-            return TaskDelete(req, res);
+            return taskDelete(req, res);
         default:
             return res.status(405).json({ error: 'Method Not Allowed' });
     }
 }
 
-async function TaskGet(req, res) {
+async function taskGet(req, res) {
     try {
         const { id } = req.query;
         const { token } = req.session;
@@ -43,7 +42,7 @@ async function TaskGet(req, res) {
     }
 }
 
-async function TaskUpdate(req, res) {
+async function taskUpdate(req, res) {
     try {
         const { id } = req.query;
         const { token } = req.session;
@@ -64,7 +63,6 @@ async function TaskUpdate(req, res) {
             },
             body: JSON.stringify({ name, description, '_method': 'PATCH' })
         })
-
         res.status(200).send(data);
 
     }catch(err) {
@@ -73,6 +71,6 @@ async function TaskUpdate(req, res) {
 
 }
 
-function TaskDelete(req, res) {
+function taskDelete(req, res) {
 
 }
