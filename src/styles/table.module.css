@@ -70,7 +70,7 @@ a.add {
   transition: all .2s ease-in-out;
 }
 
-.pagination li button.active, .pagination li button:hover {
+.pagination li button.active, .pagination li button:hover:enabled {
   background-color: #2e4ead;
   color: #fff;
 }
