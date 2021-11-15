@@ -74,16 +74,12 @@ export default function Login() {
     )
 }
 
-export const getServerSideProps = withIronSessionSsr(async function ({ req }) {
+export const getServerSideProps = withIronSessionSsr(async function (ctx) {
+    const { req, query } = ctx
     const { user } = req.session
 
-    const nexturi = req.url 
-    ? (
-        decodeURIComponent(req.url).indexOf('next=') !== -1 
-        ? decodeURIComponent(req.url).split('next=')[1] : route('user.index')
-    )
-    : route('user.index');
-    
+    const nexturi = query.next || route('user.index')
+
     if (user) {
         return {
             redirect : {

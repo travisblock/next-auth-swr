@@ -8,7 +8,8 @@ import { useTable } from "react-table"
 import { SingleSkeleton } from "components/globals/skeletons"
 import tableStyle from 'styles/table.module.css'
 import Link from "next/link"
-import Spinner from "components/globals/spinner"
+import { withIronSessionSsr } from "iron-session/next"
+import { sessionOptions } from "lib/session"
 
 function Table ({ columns, data, loading}) {
     const { 
@@ -105,22 +106,36 @@ export default function Task() {
     )
 
     return (
-        <>
-            { loading ? <Spinner/> : (
-                <UserLayout title="Daftar Tugas Saya">
-                    <div className="content">
-                        <h1 style={{ textAlign: 'center' }}>Tugas Saya</h1>
-                    </div>
-                    <div className="content" style={{ overflowX: 'auto' }}>
-                        <div className={tableStyle.add}>
-                            <Link href={route('user.task.create')}>
-                                <a className={tableStyle.add}>+ Tambah Tugas</a>
-                            </Link>
-                        </div>
-                        <Table columns={columns} data={tasks} loading={loading} />
-                    </div>
-                </UserLayout>
-            )}
-        </>
+        <UserLayout title="Daftar Tugas Saya">
+            <div className="content">
+                <h1 style={{ textAlign: 'center' }}>Tugas Saya</h1>
+            </div>
+            <div className="content" style={{ overflowX: 'auto' }}>
+                <div className={tableStyle.add}>
+                    <Link href={route('user.task.create')}>
+                        <a className={tableStyle.add}>+ Tambah Tugas</a>
+                    </Link>
+                </div>
+                <Table columns={columns} data={tasks} loading={loading} />
+            </div>
+        </UserLayout>
     )
 }
+
+export const getServerSideProps = withIronSessionSsr(async function (ctx) {
+    const { req, resolvedUrl } = ctx
+    const { user } = req.session
+
+    const nexturi = resolvedUrl ? `${route('login')}?next=${resolvedUrl}` : route('login')
+    if (!user) {
+        return {
+            redirect : {
+                destination: nexturi,
+                permanent: false
+            }
+        }
+    }
+    return {
+        props : {}
+    }
+}, sessionOptions)
