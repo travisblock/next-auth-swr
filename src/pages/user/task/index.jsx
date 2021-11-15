@@ -41,7 +41,7 @@ function Table ({ columns, data, loading}) {
                                 return (
                                     <td key={i} className={`${tableStyle.td} ${tableStyle.tdaction}`} {...cell.getCellProps()}>
                                         <div>
-                                            <Link href={route('user.task.edit', {id: cell.value})}>
+                                            <Link href={route('user.task.edit', {id: cell.value})} shallow={true}>
                                                 <a className={tableStyle.edit} href={route('user.task.edit', {id: cell.value})}>EDIT</a>
                                             </Link>
                                             <a className={tableStyle.delete} href={`/delete/${cell.value}`}>HAPUS</a>
@@ -112,7 +112,7 @@ export default function Task() {
             </div>
             <div className="content" style={{ overflowX: 'auto' }}>
                 <div className={tableStyle.add}>
-                    <Link href={route('user.task.create')}>
+                    <Link href={route('user.task.create')} shallow={true}>
                         <a className={tableStyle.add}>+ Tambah Tugas</a>
                     </Link>
                 </div>
