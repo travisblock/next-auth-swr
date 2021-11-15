@@ -50,3 +50,27 @@ a.add {
   padding: .5rem 1.5rem;
   border-radius: .5rem;
 }
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  gap: .3rem;
+  margin-top: 1.5rem;
+}
+
+.pagination li {
+  list-style: none;
+}
+
+.pagination li button {
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+  transition: all .2s ease-in-out;
+}
+
+.pagination li button.active, .pagination li button:hover {
+  background-color: #2e4ead;
+  color: #fff;
+}

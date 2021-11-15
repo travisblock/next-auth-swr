@@ -69,7 +69,7 @@ export default function Task() {
         router.replace(`${route('login')}${next}`)
     }
 
-    const tasks = useMemo(() => (loading ? Array(2).fill({}) : data), [data, loading])
+    const tasks = useMemo(() => (loading ? Array(5).fill({}) : data.data), [data, loading])
 
     const rawColumns = [
         {
@@ -117,6 +117,13 @@ export default function Task() {
                     </Link>
                 </div>
                 <Table columns={columns} data={tasks} loading={loading} />
+                <ul className={tableStyle.pagination}>
+                    { data?.links.map((link, i) => (
+                        <li className={tableStyle.paginationItem} key={i}>
+                            <button className={link.active ? tableStyle.active : null}>{link.label}</button>
+                        </li>
+                    )) }
+                </ul>
             </div>
         </UserLayout>
     )
