@@ -7,10 +7,10 @@ const API = {
     USER: {
         TASK: {
             INDEX: 'api/user/task',
-            CREATE: 'api/user/task/create',
-            EDIT: 'api/user/task/{id}',
-            UPDATE: 'api/user/task/{id}',
-            DELETE: 'api/user/task/{id}',
+            STORE: 'api/user/task/store', // POST
+            EDIT: 'api/user/task/{id}', // GET
+            UPDATE: 'api/user/task/{id}', // PATCH
+            DELETE: 'api/user/task/{id}', // DELETE
         }
     }
 }
