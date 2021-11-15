@@ -3,7 +3,7 @@ import { route } from "config/routes"
 import useSWR from "swr"
 import api from "config/api"
 import { useRouter } from "next/router"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { useTable } from "react-table"
 import { SingleSkeleton } from "components/globals/skeletons"
 import tableStyle from 'styles/table.module.css'
@@ -11,7 +11,7 @@ import Link from "next/link"
 import { withIronSessionSsr } from "iron-session/next"
 import { sessionOptions } from "lib/session"
 
-function Table ({ columns, data, loading}) {
+function Table ({ columns, data, loading, from}) {
     const { 
         getTableProps, 
         getTableBodyProps, 
@@ -37,19 +37,22 @@ function Table ({ columns, data, loading}) {
                     return (
                         <tr key={i} {...row.getRowProps()}>
                         {row.cells.map((cell, i) => {
-                            if ((cell.column.id === "id") && !loading ) {
                                 return (
                                     <td key={i} className={`${tableStyle.td} ${tableStyle.tdaction}`} {...cell.getCellProps()}>
-                                        <div>
-                                            <Link href={route('user.task.edit', {id: cell.value})} shallow={true}>
-                                                <a className={tableStyle.edit} href={route('user.task.edit', {id: cell.value})}>EDIT</a>
-                                            </Link>
-                                            <a className={tableStyle.delete} href={`/delete/${cell.value}`}>HAPUS</a>
-                                        </div>
+                                        {(cell.column.id === "id") && !loading && (
+                                            <div>
+                                                <Link href={route('user.task.edit', {id: cell.value})} shallow={true}>
+                                                    <a className={tableStyle.edit} href={route('user.task.edit', {id: cell.value})}>EDIT</a>
+                                                </Link>
+                                                <a className={tableStyle.delete} href={`/delete/${cell.value}`}>HAPUS</a>
+                                            </div>
+                                        )}
+                                        {(cell.column.id === "row") && !loading && (
+                                            <>{ Number(cell.row.id) + Number(from)}</>
+                                        )}
+                                        { (cell.column.id !== "id" || loading) && cell.render('Cell') }
                                     </td>
                                 )
-                            }
-                            return <td key={i} className={tableStyle.td} {...cell.getCellProps()}>{cell.render('Cell')}</td>
                         })}
                         </tr>
                     )
@@ -60,7 +63,8 @@ function Table ({ columns, data, loading}) {
 }
 
 export default function Task() {
-    const { data, error} = useSWR(api('user.task.index'))
+    const [pageIndex, setPageIndex] = useState(1)
+    const { data, error } = useSWR(`${api('user.task.index')}?page=${pageIndex}`)
     const router = useRouter()
     const next = router.asPath ? `/?next=${router.asPath}` : ''
     const loading = (!error && !data) || (error && !data)
@@ -75,7 +79,6 @@ export default function Task() {
         {
             Header: 'No',
             id: 'row',
-            Cell: ({ row }) => row.index + 1,
             width: 5
         },
         {
@@ -105,6 +108,12 @@ export default function Task() {
         : rawColumns , [data, loading, rawColumns]
     )
 
+    function handlePageChange(page) {
+        if (page) {
+            setPageIndex(page)
+        }
+    }
+
     return (
         <UserLayout title="Daftar Tugas Saya">
             <div className="content">
@@ -116,13 +125,13 @@ export default function Task() {
                         <a className={tableStyle.add}>+ Tambah Tugas</a>
                     </Link>
                 </div>
-                <Table columns={columns} data={tasks} loading={loading} />
+                <Table columns={columns} data={tasks} from={data?.from ?? 0} loading={loading} />
                 <ul className={tableStyle.pagination}>
-                    { data?.links.map((link, i) => (
+                    { data?.links ? data.links.map((link, i) => (
                         <li className={tableStyle.paginationItem} key={i}>
-                            <button className={link.active ? tableStyle.active : null}>{link.label}</button>
+                            <button onClick={() => handlePageChange(link.page)} disabled={!link.url} className={link.active ? tableStyle.active : null}>{link.label}</button>
                         </li>
-                    )) }
+                    )) : null }
                 </ul>
             </div>
         </UserLayout>

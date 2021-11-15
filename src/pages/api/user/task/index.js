@@ -9,8 +9,11 @@ export default withIronSessionApiRoute(taskIndex, sessionOptions);
 async function taskIndex(req, res) {
     try{
         const token = req.session.token
+        const { page } = req.query
+        const pageIndex = page ? `?page=${page}` : ''
+
         if (typeof token != 'undefined') {
-            const { tasks : data } = await fetcher(endpoint('user.task.index'), {
+            const { tasks : data } = await fetcher(`${endpoint('user.task.index')}${pageIndex}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -19,9 +22,13 @@ async function taskIndex(req, res) {
                 }
             })
 
+            // console.log(data);
+
             data.links.map(link => {
                 const page = link?.url?.split('?')[1];
+                const pageNumber = link.url ? page?.split('=')[1] : null;
                 link.url = link.url ? `${api('user.task.index')}?${page}` : null;
+                link.page = pageNumber;
             })
 
             res.json(data)
