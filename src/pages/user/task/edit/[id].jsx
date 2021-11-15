@@ -1,15 +1,17 @@
 import UserLayout from "components/layouts/user";
 import api from "config/api";
 import { route } from "config/routes";
-import { useRouter } from "next/router";
 import useSWR from "swr";
 import formStyle from "styles/form.module.css";
 import { SingleSkeleton } from "components/globals/skeletons";
 import fetcher from "lib/fetcher";
 import { useState } from "react";
+import { useClientRouter } from "use-client-router";
+import { withIronSessionSsr } from "iron-session/next";
+import { sessionOptions } from "lib/session";
 
 export default function TaskEdit() {
-    const router = useRouter()
+    const router = useClientRouter()
     const { id } = router.query
     const { data, error, mutate } = useSWR(api('user.task.edit', { id: id }))
     const loading = (!error && !data) || ( error && !data )
@@ -21,7 +23,7 @@ export default function TaskEdit() {
 
     async function handleFormSubmit(e) {
         e.preventDefault()
-        setSubmitted('Processing...')
+        setSubmitted('Proses...')
         const formData = new FormData(e.target)
         const data = {
             id: id,
@@ -30,25 +32,25 @@ export default function TaskEdit() {
         }
 
         try {
-            const { data: update } = await fetcher(api('user.task.update', { id: id }), {
+            const updated = await fetcher(api('user.task.update', { id: id }), {
                 method: 'PATCH',
                 body: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
-            setSubmitted('Success...')
-            mutate()
-            setTimeout(() => {
-                setSubmitted(false)
-            }, 2000)
+            setSubmitted('Sukses...')
+            if (updated) {
+                mutate()
+                router.push(`${route('user.task.index')}`, { shallow: true })
+            }
         }catch (err) {
             setSubmitted(false)
         }
     }
     
     return (
-        <>
+        <UserLayout title="Edit Tugas">
             <div className="content">
                 <h1 style={{ textAlign: 'center' }}>Edit { data?.name } </h1>
             </div>
@@ -75,17 +77,30 @@ export default function TaskEdit() {
                     )}
                     <div className={formStyle.group}>
                         <button type="submit" className={formStyle.button} disabled={submitted ? true : false}>
-                            { submitted ? submitted : 'Submit' }
+                            { submitted ? submitted : 'Simpan' }
                         </button>
                     </div>
                 </form>
             </div>
-        </>
+        </UserLayout>
     )
 }
 
-TaskEdit.getLayout = (page) => (
-    <UserLayout title="Edit Tugas">
-        { page }
-    </UserLayout>
-)
+
+export const getServerSideProps = withIronSessionSsr(async function (ctx) {
+    const { req, resolvedUrl } = ctx
+    const { user } = req.session
+
+    const nexturi = resolvedUrl ? `${route('login')}?next=${resolvedUrl}` : route('login')
+    if (!user) {
+        return {
+            redirect : {
+                destination: nexturi,
+                permanent: false
+            }
+        }
+    }
+    return {
+        props : {}
+    }
+}, sessionOptions)

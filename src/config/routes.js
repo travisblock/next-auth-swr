@@ -7,7 +7,7 @@ const ROUTES = {
         TASK: {
             INDEX: 'user/task',
             CREATE: 'user/task/create',
-            EDIT: 'user/task/{id}/edit'
+            EDIT: 'user/task/edit/{id}'
         }
     }
 }
