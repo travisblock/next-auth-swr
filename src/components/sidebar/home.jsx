@@ -5,6 +5,7 @@ import style from "./home.module.css"
 import { route } from "config/routes";
 import Link from "next/link"
 import { useState } from "react";
+import { sessionOptions } from "lib/session";
 
 export default function HomeSidebar({ collapsed } = {}) {
     const router = useRouter();
@@ -15,6 +16,7 @@ export default function HomeSidebar({ collapsed } = {}) {
         setIslogout(true)
         try{
             await fetcher(api('logout'));
+            document.cookie = `${sessionOptions.cookieName}=;max-age=0;expires=${new Date().toDateString()}`;
         }catch(e){
             console.log('logout action error ', e)
             setIslogout(false)
