@@ -1,3 +1,4 @@
+import api from "config/api";
 import endpoint from "config/endpoint";
 import { withIronSessionApiRoute } from "iron-session/next"
 import fetcher from "lib/fetcher";
@@ -17,6 +18,12 @@ async function taskIndex(req, res) {
                     'Accept': 'application/json'
                 }
             })
+
+            data.links.map(link => {
+                const page = link?.url?.split('?')[1];
+                link.url = link.url ? `${api('user.task.index')}?${page}` : null;
+            })
+
             res.json(data)
         } else {
             req.session.destroy()
