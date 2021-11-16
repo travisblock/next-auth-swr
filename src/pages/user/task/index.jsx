@@ -1,16 +1,16 @@
 import UserLayout from "components/layouts/user"
 import { route } from "config/routes"
-import useSWR, { mutate } from "swr"
+import useSWR from "swr"
 import api from "config/api"
 import { useRouter } from "next/router"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useTable } from "react-table"
 import { SingleSkeleton } from "components/globals/skeletons"
 import tableStyle from 'styles/table.module.css'
 import Link from "next/link"
 import { withIronSessionSsr } from "iron-session/next"
 import { sessionOptions } from "lib/session"
-import confirmAlert from "components/globals/ConfirmAlert"
+import confirmAlert, { closeAlert } from "components/globals/ConfirmAlert"
 import fetcher from "lib/fetcher"
 
 function handleDelete(e, id, mutate) {
@@ -107,6 +107,13 @@ export default function Task() {
     if (error && !data) {
         router.replace(`${route('login')}${next}`)
     }
+
+    useEffect(() => {
+        router.events.on('routeChangeStart', () => closeAlert());
+        return () => {
+            router.events.off('routeChangeStart', () => closeAlert());
+        }
+    }, [router])
 
     const tasks = useMemo(() => (loading ? Array(5).fill({}) : data.data), [data, loading])
 
