@@ -1,6 +1,6 @@
 import UserLayout from "components/layouts/user"
 import { route } from "config/routes"
-import useSWR from "swr"
+import useSWR, { mutate } from "swr"
 import api from "config/api"
 import { useRouter } from "next/router"
 import { useMemo, useState } from "react"
@@ -10,8 +10,43 @@ import tableStyle from 'styles/table.module.css'
 import Link from "next/link"
 import { withIronSessionSsr } from "iron-session/next"
 import { sessionOptions } from "lib/session"
+import confirmAlert from "components/globals/ConfirmAlert"
+import fetcher from "lib/fetcher"
 
-function Table ({ columns, data, loading, from}) {
+function handleDelete(e, id, mutate) {
+    e.preventDefault();
+    confirmAlert({
+        title: 'Hapus Tugas',
+        message: 'Apakah anda yakin ingin menghapus tugas ini?',
+        buttons: [
+            {
+                label: 'Hapus',
+                key: 'ok',
+                onClick: async () => {
+                    console.log('delete', id)
+                    try {
+                        const res = await fetcher(api('user.task.delete', {id: id}), {
+                            method: 'DELETE'
+                        });
+                        console.log(res);
+                        mutate()
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            },
+            {
+                label: 'Batal',
+                key: 'cancel',
+                onClick: () => {
+                    console.log('cancel')
+                }
+            }
+        ]
+    })
+}
+
+function Table ({ columns, data, loading, from, mutate }) {
     const { 
         getTableProps, 
         getTableBodyProps, 
@@ -44,7 +79,7 @@ function Table ({ columns, data, loading, from}) {
                                                 <Link href={route('user.task.edit', {id: cell.value})} shallow={true}>
                                                     <a className={tableStyle.edit} href={route('user.task.edit', {id: cell.value})}>EDIT</a>
                                                 </Link>
-                                                <a className={tableStyle.delete} href={`/delete/${cell.value}`}>HAPUS</a>
+                                                <a className={tableStyle.delete} href="#" onClick={(e) => handleDelete(e, cell.value, mutate)}>HAPUS</a>
                                             </div>
                                         )}
                                         {(cell.column.id === "row") && !loading && (
@@ -64,7 +99,7 @@ function Table ({ columns, data, loading, from}) {
 
 export default function Task() {
     const [pageIndex, setPageIndex] = useState(1)
-    const { data, error } = useSWR(`${api('user.task.index')}?page=${pageIndex}`)
+    const { data, error, mutate } = useSWR(`${api('user.task.index')}?page=${pageIndex}`)
     const router = useRouter()
     const next = router.asPath ? `/?next=${router.asPath}` : ''
     const loading = (!error && !data) || (error && !data)
@@ -125,7 +160,7 @@ export default function Task() {
                         <a className={tableStyle.add}>+ Tambah Tugas</a>
                     </Link>
                 </div>
-                <Table columns={columns} data={tasks} from={data?.from ?? 0} loading={loading} />
+                <Table columns={columns} data={tasks} from={data?.from ?? 0} loading={loading} mutate={mutate} />
                 <ul className={tableStyle.pagination}>
                     { data?.links ? data.links.map((link, i) => (
                         <li className={tableStyle.paginationItem} key={i}>

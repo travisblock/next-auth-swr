@@ -71,6 +71,30 @@ async function taskUpdate(req, res) {
 
 }
 
-function taskDelete(req, res) {
+async function taskDelete(req, res) {
+    try {
+        const { id } = req.query;
+        const { token } = req.session;
 
+        if (!token) {
+            req.session.destroy();
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        await fetcher(endpoint('user.task.delete', { id }), {
+            method: 'DELETE',
+            body: JSON.stringify({ '_method': 'DELETE' }),
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+
+        res.status(200).send({ message: 'Task deleted' });
+
+    } catch(err) {
+        res.status(400).json({ error: err.message })
+    }
 }
