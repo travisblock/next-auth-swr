@@ -1,6 +1,19 @@
+.content {
+    --toastify-color-info: #3498db;
+    --toastify-color-success: #4CAF50;
+    --toastify-color-warning: #f1c40f;
+    --toastify-color-error: #e74c3c;
+  
+    --toastify-icon-color-info: var(--toastify-color-info);
+    --toastify-icon-color-success: var(--toastify-color-success);
+    --toastify-icon-color-warning: var(--toastify-color-warning);
+    --toastify-icon-color-error: var(--toastify-color-error);
+}
+
 html {
   font-size: 62.5%;
 }
+
 body {
   padding: 0;
   margin: 0;

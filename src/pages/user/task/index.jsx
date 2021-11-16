@@ -12,11 +12,13 @@ import { withIronSessionSsr } from "iron-session/next"
 import { sessionOptions } from "lib/session"
 import confirmAlert, { closeAlert } from "components/globals/ConfirmAlert"
 import fetcher from "lib/fetcher"
+import { toast, ToastContainer } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css';
 
 function handleDelete(e, id, mutate) {
     e.preventDefault();
     confirmAlert({
-        title: 'Hapus Tugas',
+        title: 'Hapus Tugas!',
         message: 'Apakah anda yakin ingin menghapus tugas ini?',
         buttons: [
             {
@@ -28,10 +30,15 @@ function handleDelete(e, id, mutate) {
                         const res = await fetcher(api('user.task.delete', {id: id}), {
                             method: 'DELETE'
                         });
-                        console.log(res);
+                        toast.success('Berhasil hapus tugas', {
+                            theme: 'colored'
+                        })
                         mutate()
                     } catch (error) {
                         console.log(error)
+                        toast.error('Gagal hapus tugas', {
+                            theme: 'colored'
+                        })
                     }
                 }
             },
@@ -175,6 +182,7 @@ export default function Task() {
                         </li>
                     )) : null }
                 </ul>
+                <ToastContainer/>
             </div>
         </UserLayout>
     )
